@@ -52,7 +52,7 @@
    [#\{ (token-grace-start)] [#\} (token-grace-end)]
    [#\z (token-rest)]        [#\Z (token-long-rest)]
    
-   ; Additional text
+   ; Text / guitar chords
    [(:: #\" (:* (:or (:: #\\ any-char) (:~ #\"))) #\")
     (token-text (string-trim lexeme "\""))]
    
@@ -60,20 +60,19 @@
    [(:: #\% (:* (:~ #\newline)))
     (token-comment lexeme)]
    
-   ; Escaped whitespace (ignore newline)
-   [(:: #\\ (:* whitespace)) 
+   ; Whitespace breaks notes sharing a bar (\ continues lines, so treat as a normal break)
+   [(:or (:: #\\ (:* whitespace))
+         (:+ whitespace))
     (abc-lexer input-port)]
    
-   ; Break lines on newlines (unless escaped) and break bars on other whitespace
-   [#\newline (token-linebreak)]
-   [whitespace (token-break)]))
+   ; Newlines break lines in output as well (unless escaped with \, see above)
+   [#\newline (token-linebreak)]))
 
 (define (lex lexer in)
   (for/list ([token (in-port lexer in)]
              #:break (eq? token 'eof))
     token))
 
-(call-with-input-file "greensleeves.abc" (curry lex abc-lexer))
-;(call-with-input-file "chiming-bells.abc" (curry lex abc-lexer))
+(define abc-lex (curry lex abc-lexer))
 
  
