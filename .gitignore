@@ -1,0 +1,7 @@
+# Don't include backups
+*.1
+*~
+\#*
+
+# Don't include ABC files
+*.abc
