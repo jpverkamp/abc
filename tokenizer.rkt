@@ -1,20 +1,11 @@
 #lang racket
 
-(require parser-tools/lex
-         (prefix-in : parser-tools/lex-sre))
+(require 
+ parser-tools/lex
+ (prefix-in : parser-tools/lex-sre)
+ "tokens.rkt")
 
-(define-tokens abc 
-  (header pitch duration text comment ending))
-
-(define-empty-tokens abc-empty
-  (tie
-   chord-start chord-end
-   slur-start slur-end
-   grace-start grace-end
-   rest long-rest 
-   bar double-bar double-bar-start double-bar-end 
-   repeat-start repeat-end repeat-end-start
-   break linebreak))
+(provide abc-lex)
 
 (define abc-lexer
   (lexer
@@ -68,11 +59,13 @@
    ; Newlines break lines in output as well (unless escaped with \, see above)
    [#\newline (token-linebreak)]))
 
+; Lex a document into a list given a lexer
 (define (lex lexer in)
   (for/list ([token (in-port lexer in)]
              #:break (eq? token 'eof))
     token))
 
+; Lex ABC documents
 (define abc-lex (curry lex abc-lexer))
 
  
