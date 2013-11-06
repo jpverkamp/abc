@@ -35,7 +35,7 @@
 
 ; Parse a key signature
 (define (parse-key text)
-  (match-define (list note type)
+  (match-define (list _ note type)
     (map 
      string->symbol
      (regexp-match #px"([A-G][#b]?)(|Maj|m|Min|Mix|Dor|Phr|Lyd|Loc)" text)))

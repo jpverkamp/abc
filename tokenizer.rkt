@@ -12,7 +12,7 @@
    ; Header lines / inline headers
    [(:or (:: (:/ "AZ") #\: (:* whitespace) (:* (:~ #\newline)) (:* whitespace) (:? #\newline))
          (:: #\[ (:/ "AZ") #\: (:* whitespace) (:* (:~ #\])) (:* whitespace) #\]))
-    (header lexeme)]
+    (header (string-trim lexeme #px"[\\[\\]]"))]
    
    ; Pitches
    [(:: (:? (:or "^^" "^" "__" "_" "="))
